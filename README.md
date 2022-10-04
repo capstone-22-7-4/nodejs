@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # 2022 캡스톤디자인 7-4
+=======
+# 2022 캡스톤디자인 5-4
+>>>>>>> f7115a299d3c3df53bd573445d1db3106f4c7812
 git clone -> npm install -> node ./src/mainkp.js  
 내부 포트번호 : 8880
 
