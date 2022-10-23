@@ -18,6 +18,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/user', require('./userkp'));
+app.use('/match', require('./matchkp'));
+app.use('/class', require('./classkp'));
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
