@@ -28,6 +28,15 @@ var user = sequelize.define('users', {
                  allowNull : false },
 },{ updatedAt : false });
 
+var match = sequelize.define('match', {
+    id : {      type : Sequelize.INTEGER,
+                primaryKey : true,
+                autoIncrement : true},
+    madeby : {  type : Sequelize.INTEGER,
+                allowNull : false},
+    content : { type : Sequelize.JSON,
+                allowNull : false}
+});
 
 user.sync({force:true}).then(() => {console.log('User table connected');
     user.create({
@@ -36,8 +45,12 @@ user.sync({force:true}).then(() => {console.log('User table connected');
         name : 'caps',
         salt_key : 'sampleSalt',
         password : 'ac8d85f18cb8fd8e7f7b4dd0c23cf0a07675b3bf3e491bc62be070ee3699b50d',
-    });});
+    });
+});
+
+match.sync({force:true}).then(() => {console.log('Match table connected')});
 
 module.exports ={
     users : user,
+    match : match
 };

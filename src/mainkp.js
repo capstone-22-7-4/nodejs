@@ -3,6 +3,7 @@ var app = express();
 const PORT = 8880;
 
 var bodyParser = require('body-parser');
+app.use(express.json())
 app.use(bodyParser.urlencoded({extended:false}));
 
 const session = require('express-session');
