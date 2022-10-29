@@ -31,12 +31,22 @@ var user = sequelize.define('users', {
 var match = sequelize.define('match', {
     id : {      type : Sequelize.INTEGER,
                 primaryKey : true,
-                autoIncrement : true},
+                autoIncrement : true },
     madeby : {  type : Sequelize.INTEGER,
-                allowNull : false},
+                allowNull : false },
     content : { type : Sequelize.JSON,
-                allowNull : false}
+                allowNull : false }
 });
+
+var attend = sequelize.define('room', {
+    id : {      type : Sequelize.INTEGER,
+                primaryKey : true,
+                autoIncrement : true },
+    room_id : { type : Sequelize.INTEGER,
+                allowNull : false },
+    user_id : { type : Sequelize.INTEGER,
+                allowNull : false }
+},{ updatedAt : false });
 
 user.sync({force:true}).then(() => {console.log('User table connected');
     user.create({
@@ -49,8 +59,10 @@ user.sync({force:true}).then(() => {console.log('User table connected');
 });
 
 match.sync({force:true}).then(() => {console.log('Match table connected')});
+attend.sync({force:true}).then(() => {console.log('Attend table connected')});
 
 module.exports ={
     users : user,
-    match : match
+    match : match,
+    attend : attend
 };

@@ -11,7 +11,7 @@ module.exports = (passport) => {
     passport.use(strategy);
     passport.serializeUser(function(user_info, done){
         console.log(user_info.id,'log in session');
-        done(null, user_info.id);
+        done(null, user_info);
     });
     
     passport.deserializeUser(function(user_info,done) {
