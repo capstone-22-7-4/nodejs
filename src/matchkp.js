@@ -21,8 +21,11 @@ function getList(req,res) {
             where: { madeby : user },
             attributes : ['content', 'createdAt', 'updatedAt']
         }).then((results) => {
-            console.log(results);
-            res.status(200).send(results);
+            var contents = new Array();
+            for (const temp of results){
+                contents.push(temp.content)
+            }
+            res.status(200).send(contents);
         });
     } else res.status(401).send('log in first');
 }
@@ -43,7 +46,7 @@ function postMatch(req,res) {
 function postAttend(req, res) {
     const user = req.user;
     const { room_id } = req.body;
-    if (user) {
+    if (user.id) {
         db.match.findOne({
             where: { id: room_id },
             attributes: ['content']
@@ -52,7 +55,7 @@ function postAttend(req, res) {
                 db.attend.findOrCreate({
                     where: { room_id: room_id, user_id: user.id }
                 }).then((result) => {
-                        res.status(200).send(user.nickname + ' attend ' + res_room.game);
+                        res.status(200).json(user.nickname + ' attend ' + res_room.content.game);
                 });
             } else {    res.status(202).send('no room');}
         });

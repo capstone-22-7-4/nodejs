@@ -1,33 +1,66 @@
 const router = require('express').Router();
 const mydb = require('./dbModel');
-const passport = require('passport');
+const jwt = require('jsonwebtoken');
+require('dotenv').config()
 
 const crypto = require('crypto');
 const Op = require('sequelize').Op;
 
+router.post('/login', login);
 router.get('/islogin', islogin);
 router.post('/signup', signup);
 router.delete('/signout', signout);
-router.post('/login',passport.authenticate('local'), 
-    (req,res) => { 
-        delete req.user.id;
-        res.send(req.user); });
-router.get('/logout', (req, res) => {
-    req.logOut();
-    req.session.save(err =>{
-        if(err) throw err;
-        res.status(200).send('logout');
-    });
-});
 
 router.get('/list', getlist);
 router.get('/detail',getdetail);
 
 module.exports = router;
 
+
+function login(req,res){
+    const {email, pw} = req.body;
+    // const expire_time = 60*60*24*7    
+    var user_info = new Object();
+    mydb.users.findOne({
+        where: {email: email},
+        attributes: ['id','salt_key','password','nickname']
+    }).then((results, rejected) => {
+        if(rejected){
+            res.status(404).send(rejected);
+            return;
+        }
+        if (!results){
+            res.status(404).send('no user');
+            return;
+        }
+        const valid = crypto
+        .createHash('sha256')
+        .update(pw+results.salt_key)
+        .digest('hex')
+        if(!(results.password === valid)){
+            res.status(404).send('no user');
+            return;
+        }
+        user_info.id = results.id;
+        user_info.nickname = results.nickname;
+        const token = jwt.sign(
+            user_info, 
+            process.env.SECRET_KEY,
+            // { expiresIn: expire_time }
+        );
+        res.cookie('user',token, 
+            // {maxAge:expire_time}
+        );
+        res.status(200).json({
+            result: 'ok',
+            jwt: token
+        })
+    })
+}
+
 function islogin(req,res){
-    var user = req.user;
-    if (user)   res.status(200).send(true);
+    const user = req.user;
+    if (user.id)   res.status(200).send(true);
     else        res.status(202).send(false);
 }
 
@@ -71,24 +104,20 @@ function signup(req,res){
 }
 
 function signout(req,res){
-    var user = req.user;
-    if(user){
-        mydb.users.destroy({where:{id:user}});
-        req.logOut();
-        req.session.save(err =>{
-            if(err) throw err;
-            res.status(200).send('sign out');
-        });
+    const user = req.user;
+    if(user.id){
+        mydb.users.destroy({where:{id:user.id}});
+        req.status(200).cookie('user', "").send('sign out');
     } else {
         res.status(401).send('log in first');
     }
 }
 
 function getdetail(req,res){
-    var user = req.user;
-    if (user){
+    const user = req.user;
+    if (user.id){
         mydb.users.findOne({
-            where: {id : user},
+            where: {id : user.id},
             attributes: ['nickname', 'email']
         })
         .then((results, rejected) => {

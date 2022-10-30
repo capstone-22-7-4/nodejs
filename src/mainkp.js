@@ -1,23 +1,23 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 const PORT = 8880;
 
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const cookie = require('cookie');
+require('dotenv').config()
+
 app.use(express.json())
 app.use(bodyParser.urlencoded({extended:false}));
 
-const session = require('express-session');
-const passport = require('passport');
-app.use(session({
-    resave:false,
-    saveUninitialized:false,
-    secret:'secret key'
-}));
+const verifyToken = (req,res,next) => {
+    const cookies = cookie.parse(req.headers.cookie);
+    const userData = jwt.verify(cookies.user, process.env.SECRET_KEY);
+    req.user = userData
+    next()
+};
 
-require('./passport')(passport);
-app.use(passport.initialize());
-app.use(passport.session());
-
+app.use(verifyToken);
 app.use('/user', require('./userkp'));
 app.use('/match', require('./matchkp'));
 app.use('/class', require('./classkp'));

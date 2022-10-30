@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/capstone22-5-4/zookeeper#readme",
   "dependencies": {
+    "cookie": "^0.5.0",
+    "dotenv": "^16.0.3",
     "express": "^4.17.3",
-    "express-session": "^1.17.2",
+    "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
-    "passport": "^0.6.0",
-    "passport-local": "^1.0.0",
     "sequelize": "^6.17.0"
   },
   "devDependencies": {
