@@ -9,10 +9,35 @@ const fs = require('fs');
 const sports_list = fs.readFileSync('./sports.txt', 'utf8').split('\n');
 
 router.get('/mylist', getList);
+router.get('/all:offset', getAllList);
+router.get('/attend:room', getAttend);
+router.get('/part:room', getAttendNum);
 router.post('/start', postMatch);
-router.post('/attend', postAttend);
 
 module.exports = router;
+
+function getAttendNum(req,res) {
+    const room_id = Number(req.params.room)
+    if(room_id){
+        db.attend.count({
+            where : { room_id: room_id}
+        }).then((result) => {
+            res.status(200).send(String(result))
+        });
+    } else res.status(401).send('put integer');
+}
+
+function getAllList(req,res) {
+    const limit = 10;
+    db.match.findAll({
+        attributes: ['id','content'],
+        offset: Number(req.params.offset)*limit || 0,
+        limit: limit,
+        subQuery: false
+    }).then((results) => {
+        res.status(200).send(results);
+    });
+}
 
 function getList(req,res) {
     const user = req.user.id;
@@ -21,13 +46,14 @@ function getList(req,res) {
             where: { madeby : user },
             attributes : ['content', 'createdAt', 'updatedAt']
         }).then((results) => {
-            var contents = new Array();
-            for (const temp of results){
-                contents.push(temp.content)
-            }
-            res.status(200).send(contents);
+            // var contents = new Array();
+            // for (const temp of results){
+            //     contents.push(temp.content)
+            // }
+            // res.status(200).send(contents);
+                res.status(200).send(results);
         });
-    } else res.status(401).send('log in first');
+    } else {    res.status(401).send('log in first');}
 }
 
 function postMatch(req,res) {
@@ -38,14 +64,23 @@ function postMatch(req,res) {
             madeby : user,
             content : content
         }).then((result) => {
-            res.status(200).send(content.game + ' Matching Start'); 
+            db.attend.create({
+                room_id: result.id, 
+                user_id: user
+            }).then((res_room) => {
+                res.status(200).send(content.game + ' Matching Start in room '+res_room.room_id); 
+            });
         });
-    } else res.status(401).send('log in first');
+    } else {    res.status(401).send('log in first');}
 }
 
-function postAttend(req, res) {
+function getAttend(req, res) {
     const user = req.user;
-    const { room_id } = req.body;
+    const room_id = Number(req.params.room)
+    if (!room_id){
+        res.status(402).send('put integer');
+        return;
+    }
     if (user.id) {
         db.match.findOne({
             where: { id: room_id },
@@ -61,3 +96,4 @@ function postAttend(req, res) {
         });
     } else {            res.status(401).send('log in first');}
 } 
+
