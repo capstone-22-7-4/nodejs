@@ -11,9 +11,12 @@ app.use(express.json())
 app.use(bodyParser.urlencoded({extended:false}));
 
 const verifyToken = (req,res,next) => {
-    const cookies = cookie.parse(req.headers.cookie);
-    const userData = jwt.verify(cookies.user, process.env.SECRET_KEY);
-    req.user = userData
+    try{
+        const cookies = cookie.parse(req.headers.cookie);
+        const userData = jwt.verify(cookies.user, process.env.SECRET_KEY);
+        req.user = userData
+    }
+    catch (error){}
     next()
 };
 

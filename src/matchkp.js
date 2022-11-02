@@ -40,10 +40,10 @@ function getAllList(req,res) {
 }
 
 function getList(req,res) {
-    const user = req.user.id;
+    const user = req.user;
     if(user){
         db.match.findAll({
-            where: { madeby : user },
+            where: { madeby : user.id },
             attributes : ['content', 'createdAt', 'updatedAt']
         }).then((results) => {
             // var contents = new Array();
@@ -57,16 +57,16 @@ function getList(req,res) {
 }
 
 function postMatch(req,res) {
-    const user = req.user.id;
+    const user = req.user;
     const content = req.body;
     if (user){
         db.match.create({
-            madeby : user,
+            madeby : user.id,
             content : content
         }).then((result) => {
             db.attend.create({
                 room_id: result.id, 
-                user_id: user
+                user_id: user.id
             }).then((res_room) => {
                 res.status(200).send(content.game + ' Matching Start in room '+res_room.room_id); 
             });
