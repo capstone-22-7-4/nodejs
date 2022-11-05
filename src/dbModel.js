@@ -34,8 +34,17 @@ var match = sequelize.define('match', {
                 autoIncrement : true },
     madeby : {  type : Sequelize.INTEGER,
                 allowNull : false },
+    game : {    type : Sequelize.STRING,
+                allowNull :false },
+    lati : {    type : Sequelize.STRING,
+                allowNull : false },
+    longi : {   type : Sequelize.STRING,
+                allowNull : false },
     content : { type : Sequelize.JSON,
                 allowNull : false }
+},{
+    charset: 'utf8',
+    collate: 'utf8_general_ci'
 });
 
 var attend = sequelize.define('room', {
@@ -58,8 +67,23 @@ user.sync({force:true}).then(() => {console.log('User table connected');
     });
 });
 
-match.sync({force:true}).then(() => {console.log('Match table connected')});
-attend.sync({force:true}).then(() => {console.log('Attend table connected')});
+match.sync({force:true}).then(() => {console.log('Match table connected');
+    match.create({
+       madeby : 1,
+       game : "농구",
+       lati :  "37.50423495445599",
+       longi: "126.95743066324361",
+       content: {
+           "limit": "2022-11-05 22:00"
+       }
+    });
+});
+attend.sync({force:true}).then(() => {console.log('Attend table connected');
+    attend.create({
+        room_id : 1,
+        user_id : 1
+    });
+});
 
 module.exports ={
     users : user,
