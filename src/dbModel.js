@@ -9,6 +9,12 @@ var sequelize = new Sequelize('capstone', 'caps', 'caps74',{
         min : 0,
         idle : 10000
     },
+    timezone: "+09:00",
+    dialectOptions: {
+        charset: "utf8mb4",
+        dateStrings: true,
+        typeCast: true,
+    },
     logging : false
 });
 
@@ -54,6 +60,8 @@ var attend = sequelize.define('room', {
     room_id : { type : Sequelize.INTEGER,
                 allowNull : false },
     user_id : { type : Sequelize.INTEGER,
+                allowNull : false },
+    nickname : {type : Sequelize.STRING,
                 allowNull : false }
 },{ updatedAt : false });
 
@@ -81,7 +89,8 @@ match.sync({force:true}).then(() => {console.log('Match table connected');
 attend.sync({force:true}).then(() => {console.log('Attend table connected');
     attend.create({
         room_id : 1,
-        user_id : 1
+        user_id : 1,
+        nickname : "sample"
     });
 });
 
