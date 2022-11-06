@@ -157,11 +157,10 @@ url : http://IP:PORT/match/all(offset)
 ### header :
 > GET 형식
 ### return :
-|    cause         | status | content                                                        |
-|:----------------:|:------:|:--------------------------------------------------------------:|
-|    참여자 목록    |   200  | {"list": ["sample", "2022-12-15 10:00:00", ... ], "number": 2} |
-| room_id 형식 오류 |   402  |                        "put integer"                           |
-| 해당 room_id 없음 |   202  |                          "no room"                             |
+|    cause         | status | content                                                                                   |
+|:----------------:|:------:|:-----------------------------------------------------------------------------------------:|
+|     요청 성공     |   200  | [{"id":${room_id}, "game":${game}, "lati":${위도}, "longi":${경도}, "content":${content}, "createdAt":${생성시간} }, ...] |
+| room_id 형식 오류 |   402  |                                     "put integer"                                         |
 #
 ## 내방리스트
 로그인 되어있는 상태에서
@@ -169,9 +168,16 @@ url : http://IP:PORT/match/mylist
 ### header :
 > GET 형식
 ### return :
+|    cause     | status | content                                                                                   |
+|:------------:|:------:|:-----------------------------------------------------------------------------------------:|
+|   요청 성공   |   200  | [{"id":${room_id}, "game":${game}, "lati":${위도}, "longi":${경도}, "content":${content}, "createdAt":${생성시간} }, ...] |
+| 비로그인 상태 |   401  |  'log in first' |
 #
 ## 게임별 방
 url : http://IP:PORT/match/list(game)
 ### header :
 > GET 형식
 ### return :
+|    cause     | status | content                                                                                   |
+|:------------:|:------:|:-----------------------------------------------------------------------------------------:|
+|   요청 성공   |   200  | [{"id":${room_id}, "game":${game}, "lati":${위도}, "longi":${경도}, "content":${content}, "createdAt":${생성시간} }, ...] |

@@ -54,7 +54,7 @@ function getAttend(req, res) {
         }).then((res_room) => {
             if (res_room) {
                 db.attend.findOrCreate({
-                    where: { room_id: room_id, user_id: user.id, user_nickname: user.nickname }
+                    where: { room_id: room_id, user_id: user.id, nickname: user.nickname }
                 }).then((result) => {
                         res.status(200).json(user.nickname + ' attend ' + res_room.game);
                 });
@@ -122,10 +122,10 @@ function getAttendNum(req,res) {
 
 function getAllList(req,res) {
     const offset = Number(req.params.offset);
-    if (offset) {
+    if (offset != undefined) {
         const limit = 10;
         db.match.findAll({
-            attributes: ['id','game','content'],
+            attributes: ['id','game','lati','longi','content','createdAt'],
             offset: offset*limit || 0,
             limit: limit,
             subQuery: false
@@ -141,7 +141,7 @@ function getMyList(req,res) {
     if(user){
         db.match.findAll({
             where: { madeby : user.id },
-            attributes : ['id','game','lati','longi','createdAt','updatedAt']
+            attributes : ['id','game','lati','longi','content','createdAt']
         }).then((results) => {
             // var contents = new Array();
             // for (const temp of results){
@@ -157,7 +157,7 @@ function getGameList(req,res) {
     const limit = 10;
     db.match.findAll({
         where: { game : req.params.game },
-        attributes: ['id','game','lati','longi','content']
+        attributes: ['id','game','lati','longi','content','createdAt']
     }).then((results) => {
         res.status(200).send(results);
     });
