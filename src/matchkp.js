@@ -32,7 +32,8 @@ function postMatch(req,res) {
         }).then((result) => {
             db.attend.create({
                 room_id: result.id, 
-                user_id: user.id
+                user_id: user.id,
+                nickname : user.nickname
             }).then((res_room) => {
                 res.status(200).send(String(res_room.room_id)); 
             });
@@ -42,7 +43,7 @@ function postMatch(req,res) {
 
 function getAttend(req, res) {
     const user = req.user;
-    const room_id = Number(req.params.room)
+    const room_id = Number(req.params.room);
     if (!room_id){
         res.status(402).send('put integer');
         return;
@@ -56,7 +57,7 @@ function getAttend(req, res) {
                 db.attend.findOrCreate({
                     where: { room_id: room_id, user_id: user.id, nickname: user.nickname }
                 }).then((result) => {
-                        res.status(200).json(user.nickname + ' attend ' + res_room.game);
+                        res.status(200).send(user.nickname + ' attend ' + res_room.game);
                 });
             } else {    res.status(202).send('no room');}
         });
@@ -65,7 +66,7 @@ function getAttend(req, res) {
 
 function deleteAttend(req,res) {
     const user = req.user;
-    const room_id = Number(req.params.room)
+    const room_id = Number(req.params.room);
     if (!room_id){
         res.status(402).send('put integer');
         return;
@@ -96,7 +97,7 @@ function deleteAttend(req,res) {
 }
 
 function getAttendNum(req,res) {
-    const room_id = Number(req.params.room)
+    const room_id = Number(req.params.room);
     if(room_id){
         db.match.findOne({
             where: {id: room_id},
@@ -110,7 +111,7 @@ function getAttendNum(req,res) {
                     result = new Object();
                     result.list = [];
                     room_res.map((el) => {
-                        result.list.push(el.nickname,el.createdAt)
+                        result.list.push(el.nickname,el.createdAt);
                     });
                     result.number = result.list.length;
                         res.status(200).send(result);
@@ -121,7 +122,7 @@ function getAttendNum(req,res) {
 }
 
 function getAllList(req,res) {
-    const offset = Number(req.params.offset);
+    const offset = Number(req.params.offset) || 0;
     if (offset != undefined) {
         const limit = 10;
         db.match.findAll({
@@ -130,7 +131,6 @@ function getAllList(req,res) {
             limit: limit,
             subQuery: false
         }).then((results) => {
-            console.log(results);
                 res.status(200).send(results);
         });
     } else {    res.status(401).send('put integer');}
