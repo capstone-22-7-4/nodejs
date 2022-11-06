@@ -32,7 +32,10 @@ var user = sequelize.define('users', {
                  allowNull : false },
     password : { type : Sequelize.STRING(64),
                  allowNull : false },
-},{ updatedAt : false });
+},{ updatedAt : false,
+    charset: 'utf8',
+    collate: 'utf8_general_ci'
+});
 
 var match = sequelize.define('match', {
     id : {      type : Sequelize.INTEGER,
@@ -47,7 +50,7 @@ var match = sequelize.define('match', {
     longi : {   type : Sequelize.STRING,
                 allowNull : false },
     content : { type : Sequelize.JSON,
-                allowNull : false }
+                allowNull : true }
 },{
     charset: 'utf8',
     collate: 'utf8_general_ci'
@@ -63,7 +66,64 @@ var attend = sequelize.define('room', {
                 allowNull : false },
     nickname : {type : Sequelize.STRING,
                 allowNull : false }
-},{ updatedAt : false });
+},{ updatedAt : false,
+    charset: 'utf8',
+    collate: 'utf8_general_ci'
+});
+
+var gosu = sequelize.define('gosu', {
+    id : {      type : Sequelize.INTEGER,
+                primaryKey : true, 
+                autoIncrement : true },
+    game : {    type : Sequelize.STRING,
+                allowNull : false },
+    user_id : { type : Sequelize.INTEGER,
+                allowNull : false },
+    content : { type : Sequelize.JSON,
+                allowNull : true }
+},{ updatedAt : false,
+    charset: 'utf8',
+    collate: 'utf8_general_ci'
+});
+
+var gosu_class = sequelize.define('class', {
+    id : {      type : Sequelize.INTEGER,
+                primaryKey : true,
+                autoIncrement : true },
+    madeby : {  type : Sequelize.INTEGER,
+                allowNull : false },
+    game : {    type : Sequelize.STRING,
+                allowNull : false },
+    nickname : {type : Sequelize.STRING,
+                allowNull : false },
+    lati : {    type : Sequelize.STRING,
+                allowNull : false },
+    longi : {   type : Sequelize.STRING,
+                allowNull : false },
+    limit : {   type : Sequelize.INTEGER,
+                allowNull : false },
+    content : { type : Sequelize.JSON,
+                allowNull : true }
+},{
+    charset: 'utf8',
+    collate: 'utf8_general_ci'
+});
+
+var chobo = sequelize.define('chobo', {
+    id : {      type : Sequelize.INTEGER,
+                primaryKey : true,
+                autoIncrement : true },
+    room_id : { type : Sequelize.INTEGER,
+                allowNull : false },
+    user_id : { type : Sequelize.INTEGER,
+                allowNull : true },
+    nickname : {type : Sequelize.STRING,
+                allowNull : false }
+},{
+    updatedAt: false,
+    charset: 'utf8',
+    collate: 'utf8_general_ci'
+});
 
 user.sync({force:true}).then(() => {console.log('User table connected');
     user.create({
@@ -93,9 +153,14 @@ attend.sync({force:true}).then(() => {console.log('Attend table connected');
         nickname : "sample"
     });
 });
-
+gosu.sync({force:true}).then(() => {console.log('Gosu table connected');});
+gosu_class.sync({force:true}).then(() => {console.log('Class table connected');});
+chobo.sync({force:true}).then(() => {console.log('Chobo table connected');})
 module.exports ={
     users : user,
     match : match,
-    attend : attend
+    attend : attend,
+    gosu : gosu,
+    g_class : gosu_class,
+    chobo : chobo
 };
