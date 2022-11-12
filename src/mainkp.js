@@ -24,6 +24,7 @@ app.use(verifyToken);
 app.use('/user', require('./userkp'));
 app.use('/match', require('./matchkp'));
 app.use('/class', require('./classkp'));
+app.use('/report', require('./report'));
 
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);

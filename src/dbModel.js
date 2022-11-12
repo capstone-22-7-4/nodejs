@@ -19,19 +19,21 @@ var sequelize = new Sequelize('capstone', 'caps', 'caps74',{
 });
 
 var user = sequelize.define('users', {
-    id : {       type : Sequelize.INTEGER,
-                 primaryKey : true,
-                 autoIncrement : true },
-    email : {    type : Sequelize.STRING,
-                 allowNull : false },
-    nickname : { type : Sequelize.STRING,
-                 allowNull : false },
-    name : {     type : Sequelize.STRING,
-                 allowNull : false },
-    salt_key : { type : Sequelize.STRING(16),
-                 allowNull : false },
-    password : { type : Sequelize.STRING(64),
-                 allowNull : false },
+    id : {          type : Sequelize.INTEGER,
+                    primaryKey : true,
+                    autoIncrement : true },
+    email : {       type : Sequelize.STRING,
+                    allowNull : false },
+    nickname : {    type : Sequelize.STRING,
+                    allowNull : false },
+    name : {        type : Sequelize.STRING,
+                    allowNull : false },
+    salt_key : {    type : Sequelize.STRING(16),
+                    allowNull : false },
+    password : {    type : Sequelize.STRING(64),
+                    allowNull : false },
+    report_num : {  type : Sequelize.INTEGER,
+                    defaultValue : 0  }
 },{ updatedAt : false,
     charset: 'utf8',
     collate: 'utf8_general_ci'
@@ -125,6 +127,21 @@ var chobo = sequelize.define('chobo', {
     collate: 'utf8_general_ci'
 });
 
+var report_log = sequelize.define('reportlog', {
+    user_id : { type : Sequelize.INTEGER,
+                primaryKey : true,
+                allowNull : false },
+    target : {  type : Sequelize.INTEGER,
+                primaryKey : true,
+                allowNull : false },
+    content : { type : Sequelize.STRING,
+                allowNull : false }
+},{
+    updatedAt: false,
+    charset: 'utf8',
+    collate: 'utf8_general_ci'
+});
+
 user.sync({force:true}).then(() => {console.log('User table connected');
     user.create({
         email : 'first@abcd.efg',
@@ -155,12 +172,15 @@ attend.sync({force:true}).then(() => {console.log('Attend table connected');
 });
 gosu.sync({force:true}).then(() => {console.log('Gosu table connected');});
 gosu_class.sync({force:true}).then(() => {console.log('Class table connected');});
-chobo.sync({force:true}).then(() => {console.log('Chobo table connected');})
+chobo.sync({force:true}).then(() => {console.log('Chobo table connected');});
+report_log.sync({force:true}).then(() => {console.log('Report Log table connected')})
+
 module.exports ={
     users : user,
     match : match,
     attend : attend,
     gosu : gosu,
     g_class : gosu_class,
-    chobo : chobo
+    chobo : chobo,
+    report : report_log
 };
