@@ -27,7 +27,8 @@ function postRegist(req,res) {
             content : content
         }).then((result) => {
                 res.status(200).send(user.nickname + " is registered as " + game + " gosu");
-        });
+        }).catch((err) => {
+                res.status(502).send(err.errors);});
     } else {    res.status(401).send('log in first');}
 }
 
@@ -50,9 +51,11 @@ function postClass(req,res) {
                     content : content
                 }).then((result) => {
                         res.status(200).send(String(result.id));
-                })
+                }).catch((err) => {
+                        res.status(502).send(err.errors);});
             } else {    res.status(402).send('register gosu first')}
-        });
+        }).catch((err) => {
+                        res.status(502).send(err.errors);});
     } else {            res.status(401).send('log in first');}
 }
 
@@ -71,10 +74,12 @@ function getAttend(req,res) {
                             where: {room_id:room_id,user_id:user.id,nickname:user.nickname}
                         }).then((res_chobo) => {
                             res.status(200).send(user.nickname+ ' attend ' +res_room.game);
-                        });
+                        }).catch((err) => {
+                            res.status(502).send(err.errors);});
                     } else {res.status(401).send('your class');}
                 } else {    res.status(202).send('no room');}
-            });
+            }).catch((err) => {
+                            res.status(502).send(err.errors);});
         } else {            res.status(401).send('log in first');}
     } else {                res.status(402).send('put integer');}
 }
@@ -100,9 +105,11 @@ function deleteAttend(req,res) {
                             db.chobo.destroy({where:{room_id:room_id,user_id:user.id}});
                                     res.status(200).send("cancel participation");
                         } else {    res.status(202).send("already deleted");}
-                    });
+                    }).catch((err) => {
+                                    res.status(502).send(err.errors);});
                 } else {            res.status(202).send("no room");}
-            });
+            }).catch((err) => {
+                                    res.status(502).send(err.errors);});
         } else {                    res.status(401).send('log in first');}
     } else {                        res.status(402).send('put integer');}
 }
@@ -126,9 +133,11 @@ function getAttendNum(req,res) {
                     });
                     result.number = result.list.length;
                         res.status(200).send(result);
-                });
+                }).catch((err) => {
+                        res.status(502).send(err.errors);});
             } else {    res.status(202).send("no room");}
-        });
+        }).catch((err) => {
+                        res.status(502).send(err.errors);});
     } else {            res.status(401).send('put integer');}
 }
 
@@ -143,7 +152,8 @@ function getAllList(req,res) {
             subQuery: false
         }).then((results) => {
                 res.status(200).send(results);
-        });
+        }).catch((err) => {
+                res.status(502).send(err.errors);});
     } else {    res.status(401).send('put integer');}
 }
 
@@ -152,7 +162,7 @@ function getMyList(req,res) {
     if (user.id) {
         db.g_class.findAll({
             where: { madeby : user.id },
-            attributes : ['id','game','lati','longi','content','createdAt']
+            attributes : ['id','game','lati','longi','limit','content','createdAt']
         }).then((results) => {
             // var contents = new Array();
             // for (const temp of results){
@@ -160,15 +170,17 @@ function getMyList(req,res) {
             // }
             // res.status(200).send(contents);
                 res.status(200).send(results);
-        });
+        }).catch((err) => {
+                res.status(502).send(err.errors);});
     } else {    res.status(401).send('log in first');}
 }
 
 function getGameList(req,res) {
     db.match.findAll({
         where: { game : req.params.game },
-        attributes: ['id','game','lati','longi','content','createdAt']
+        attributes: ['id','game','lati','longi','limit','content','createdAt']
     }).then((results) => {
         res.status(200).send(results);
-    });
+    }).catch((err) => {
+        res.status(502).send(err.errors);});
 }

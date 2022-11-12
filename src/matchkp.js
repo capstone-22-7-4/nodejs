@@ -36,8 +36,10 @@ function postMatch(req,res) {
                 nickname : user.nickname
             }).then((res_room) => {
                 res.status(200).send(String(res_room.room_id)); 
-            });
-        });
+            }).catch((err) => {
+                res.status(502).send(err.errors);});
+        }).catch((err) => {
+                res.status(502).send(err.errors);});
     } else {    res.status(401).send('log in first');}
 }
 
@@ -58,9 +60,11 @@ function getAttend(req, res) {
                     where: { room_id: room_id, user_id: user.id, nickname: user.nickname }
                 }).then((result) => {
                         res.status(200).send(user.nickname + ' attend ' + res_room.game);
-                });
+                }).catch((err) => {
+                        res.status(502).send(err.errors);});
             } else {    res.status(202).send('no room');}
-        });
+        }).catch((err) => {
+                        res.status(502).send(err.errors);});
     } else {            res.status(401).send('log in first');}
 } 
 
@@ -90,9 +94,10 @@ function deleteAttend(req,res) {
                                 res.status(200).send("cancel participation");
                         }
                     } else {    res.status(202).send("already deleted");}
-                });
+                }).catch((err) => {
+                                res.status(502).send(err.errors);});
             } else {            res.status(202).send("no room");}
-        });
+        }).catch((err) => {     res.status(502).send(err.errors);});
     } else {                    res.status(401).send('log in first');}
 }
 
@@ -115,9 +120,11 @@ function getAttendNum(req,res) {
                     });
                     result.number = result.list.length;
                         res.status(200).send(result);
-                });
+                }).catch((err) => {
+                        res.status(502).send(err.errors);});
             } else {    res.status(202).send("no room");}
-        });
+        }).catch((err) => {
+                        res.status(502).send(err.errors);});
     } else {            res.status(401).send('put integer');}
 }
 
@@ -132,7 +139,8 @@ function getAllList(req,res) {
             subQuery: false
         }).then((results) => {
                 res.status(200).send(results);
-        });
+        }).catch((err) => {
+                res.status(502).send(err.errors);});    
     } else {    res.status(401).send('put integer');}
 }
 
@@ -149,7 +157,8 @@ function getMyList(req,res) {
             // }
             // res.status(200).send(contents);
                 res.status(200).send(results);
-        });
+        }).catch((err) => {
+                res.status(502).send(err.errors);});
     } else {    res.status(401).send('log in first');}
 }
 
@@ -160,5 +169,6 @@ function getGameList(req,res) {
         attributes: ['id','game','lati','longi','content','createdAt']
     }).then((results) => {
         res.status(200).send(results);
-    });
+    }).catch((err) => {
+        res.status(502).send(err.errors);});
 }

@@ -97,7 +97,8 @@ function signup(req,res){
                 res.status(200).send(`${email} has been created.`);
                 console.log(`ip : ${req.ip}\ncreate ${email}`);
             }
-        });
+        }).catch((err) => {
+            res.status(502).send(err.errors);});
     } else {
         res.status(404).send('Please fill it up');
     }
