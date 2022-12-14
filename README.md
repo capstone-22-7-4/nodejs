@@ -11,6 +11,9 @@ git clone -> npm install -> node ./src/mainkp.js
 |                         |                          |[참가자들](#참가자들)|                    |[참가/방 취소](#참가-취소-or-방-취소)|                     |
 |                         |                          |                    |                   |   [참가자리스트](#초보-참가자들)    |                      |
 
+## DB 
+<img width="100%" src="https://user-images.githubusercontent.com/33221641/207627598-530b3bb7-8410-43e8-b98b-336436e95dc5.png"/>
+
 #
 ## 사용자 등록
 이메일, 닉네임 중복 금지  
